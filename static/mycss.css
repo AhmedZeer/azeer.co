@@ -1,0 +1,25 @@
+/* body {
+    background-color: #000510 !important;
+} */
+
+body {
+    background-image: var(--bg-overlay), url("octo-bg-test-2.png");
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+[id*="theme"], 
+[class*="theme-switch"],
+[class*="theme-toggle"],
+button[aria-label*="theme"],
+button[aria-label*="dark"],
+button[aria-label*="light"] {
+    display: none !important;
+}
+
+/* nav {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+} */
