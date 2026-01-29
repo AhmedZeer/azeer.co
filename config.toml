@@ -1,5 +1,5 @@
 title = "azeer."
-base_url = "azeer.co"
+base_url = "https://azeer.co/"
 description = "ahmed zeer's blog."
 
 compile_sass = true
@@ -29,7 +29,6 @@ highlight_code = true
 highlight_theme = "css"
 highlight_themes_css = [
 	{ theme = "solarized-dark", filename = "syntax-theme-dark.css" },
-	# { theme = "solarized-light", filename = "syntax-theme-light.css" }
 ]
 smart_punctuation = true
 bottom_footnotes = true
