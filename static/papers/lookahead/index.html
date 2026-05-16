@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="description"
+      content="Look Ahead studies search-driven embodied action selection in PushT using ACT, Beam Search, and One Step Ahead gating."
+    />
+    <meta name="keywords" content="Look Ahead, Embodied AI, PushT, Beam Search, ACT" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Look Ahead: Search-Driven Reasoning in Embodied AI</title>
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="/papers/lookahead/static/css/bulma.min.css" />
+    <link rel="stylesheet" href="/papers/lookahead/static/css/index.css" />
+    <link rel="icon" href="/papers/lookahead/static/images/favicon.png" />
+
+    <script defer src="/papers/lookahead/static/js/fontawesome.all.min.js"></script>
+    <script defer src="/papers/lookahead/static/js/index.js"></script>
+  </head>
+  <body>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a
+          role="button"
+          class="navbar-burger"
+          aria-label="menu"
+          aria-expanded="false"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div class="navbar-menu">
+        <div class="navbar-start" style="flex-grow: 1; justify-content: center">
+          <a class="navbar-item" href="/">
+            <span class="icon">
+              <i class="fas fa-home"></i>
+            </span>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered">
+            <div class="column has-text-centered">
+              <h1 class="title is-1 publication-title">
+                Look Ahead: Search-Driven Reasoning in Embodied AI
+              </h1>
+              <div class="is-size-5 publication-authors">
+                <span class="author-block">Ahmed Zeer<sup>1</sup>,</span>
+                <span class="author-block">Osama Shbib<sup>1</sup>,</span>
+                <span class="author-block">Muzaffer Kaan Yuce<sup>1</sup>,</span>
+                <span class="author-block">Himmet Toprak Kesgin<sup>1</sup>,</span>
+                <span class="author-block">Mehmet Fatih Amasyali<sup>1</sup></span>
+              </div>
+
+              <div class="is-size-5 publication-authors">
+                <span class="author-block"><sup>1</sup>Yildiz Technical University</span>
+              </div>
+
+              <div class="column has-text-centered">
+                <div class="publication-links">
+                  <span class="link-block">
+                    <a
+                      class="external-link button is-normal is-rounded is-dark is-static"
+                      aria-disabled="true"
+                    >
+                      <span class="icon">
+                        <i class="fas fa-file-pdf"></i>
+                      </span>
+                      <span>Paper Coming Soon</span>
+                    </a>
+                  </span>
+                  <span class="link-block">
+                    <a
+                      href="https://github.com/AhmedZeer/lerobot-tree/tree/main/examples/tree_search/pusht"
+                      class="external-link button is-normal is-rounded is-dark"
+                    >
+                      <span class="icon">
+                        <i class="fab fa-github"></i>
+                      </span>
+                      <span>Code</span>
+                    </a>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hero teaser">
+      <div class="container is-max-desktop">
+        <div class="hero-body">
+          <div class="columns is-centered teaser-pair">
+            <div class="column">
+              <img
+                class="teaser-image"
+                src="/papers/lookahead/static/gifs/search-example-1.gif"
+                alt="PushT search-guided rollout."
+              />
+            </div>
+            <div class="column">
+              <img
+                class="teaser-image"
+                src="/papers/lookahead/static/gifs/search-animation.gif"
+                alt="Beam Search over perturbed action chunks."
+              />
+            </div>
+          </div>
+          <h2 class="subtitle has-text-centered">
+            Look Ahead uses search over perturbed ACT action chunks to improve
+            embodied action selection in PushT.
+          </h2>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Abstract</h2>
+            <div class="content has-text-justified">
+              <p>
+                Search lets an embodied policy look ahead before committing to
+                an action. We study this idea in PushT by augmenting a pretrained
+                Action Chunk Transformer with Beam Search over perturbed action
+                chunks.
+              </p>
+              <p>
+                Candidate futures are evaluated in cloned simulator states and
+                scored with coverage-based reward. This turns single-pass ACT
+                inference into receding-horizon action selection while keeping the
+                learned policy as the proposal mechanism.
+              </p>
+              <p>
+                We also introduce One Step Ahead, a lightweight gate that first
+                simulates the nominal policy chunk and invokes full search only
+                when the predicted coverage change suggests that additional
+                computation is necessary.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container is-max-desktop">
+        <figure class="paper-figure">
+          <img
+            src="/papers/lookahead/static/images/figures/pusht-frames.png"
+            alt="PushT rollout frames showing action selection behavior."
+          />
+          <figcaption>
+            PushT rollout frames used to compare action selection behavior.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section examples-section">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Qualitative Examples</h2>
+            <p class="subtitle is-5">
+              Paired PushT rollouts comparing Baseline (ACT) with BeamSearch (OSA).
+            </p>
+          </div>
+        </div>
+
+        <div class="content">
+          <h3 class="title is-4">OSA Success Cases</h3>
+          <div class="example-list">
+            <article class="example-case">
+              <h4>Episode 2</h4>
+              <div class="columns">
+                <div class="column">
+                  <p class="example-label">Baseline (ACT)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/failure/posters/baseline-2.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/failure/baseline-2.mp4" type="video/mp4" />
+                  </video>
+                </div>
+                <div class="column">
+                  <p class="example-label">BeamSearch (OSA)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/failure/posters/osa-2.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/failure/osa-2.mp4" type="video/mp4" />
+                  </video>
+                </div>
+              </div>
+            </article>
+
+            <article class="example-case">
+              <h4>Episode 9</h4>
+              <div class="columns">
+                <div class="column">
+                  <p class="example-label">Baseline (ACT)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/failure/posters/baseline-9.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/failure/baseline-9.mp4" type="video/mp4" />
+                  </video>
+                </div>
+                <div class="column">
+                  <p class="example-label">BeamSearch (OSA)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/failure/posters/osa-9.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/failure/osa-9.mp4" type="video/mp4" />
+                  </video>
+                </div>
+              </div>
+            </article>
+
+            <article class="example-case">
+              <h4>Episode 22</h4>
+              <div class="columns">
+                <div class="column">
+                  <p class="example-label">Baseline (ACT)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/failure/posters/baseline-22.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/failure/baseline-22.mp4" type="video/mp4" />
+                  </video>
+                </div>
+                <div class="column">
+                  <p class="example-label">BeamSearch (OSA)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/failure/posters/osa-22.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/failure/osa-22.mp4" type="video/mp4" />
+                  </video>
+                </div>
+              </div>
+            </article>
+
+            <article class="example-case">
+              <h4>Episode 24</h4>
+              <div class="columns">
+                <div class="column">
+                  <p class="example-label">Baseline (ACT)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/failure/posters/baseline-24.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/failure/baseline-24.mp4" type="video/mp4" />
+                  </video>
+                </div>
+                <div class="column">
+                  <p class="example-label">BeamSearch (OSA)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/failure/posters/osa-24.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/failure/osa-24.mp4" type="video/mp4" />
+                  </video>
+                </div>
+              </div>
+            </article>
+
+            <article class="example-case">
+              <h4>Episode 29</h4>
+              <div class="columns">
+                <div class="column">
+                  <p class="example-label">Baseline (ACT)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/failure/posters/baseline-29.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/failure/baseline-29.mp4" type="video/mp4" />
+                  </video>
+                </div>
+                <div class="column">
+                  <p class="example-label">BeamSearch (OSA)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/failure/posters/osa-29.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/failure/osa-29.mp4" type="video/mp4" />
+                  </video>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <h3 class="title is-4">OSA Failure Cases</h3>
+          <div class="example-list">
+            <article class="example-case">
+              <h4>Episode 0</h4>
+              <div class="columns">
+                <div class="column">
+                  <p class="example-label">Baseline (ACT)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/success/posters/baseline-0.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/success/baseline-0.mp4" type="video/mp4" />
+                  </video>
+                </div>
+                <div class="column">
+                  <p class="example-label">BeamSearch (OSA)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/success/posters/osa-0.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/success/osa-0.mp4" type="video/mp4" />
+                  </video>
+                </div>
+              </div>
+            </article>
+
+            <article class="example-case">
+              <h4>Episode 3</h4>
+              <div class="columns">
+                <div class="column">
+                  <p class="example-label">Baseline (ACT)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/success/posters/baseline-3.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/success/baseline-3.mp4" type="video/mp4" />
+                  </video>
+                </div>
+                <div class="column">
+                  <p class="example-label">BeamSearch (OSA)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/success/posters/osa-3.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/success/osa-3.mp4" type="video/mp4" />
+                  </video>
+                </div>
+              </div>
+            </article>
+
+            <article class="example-case">
+              <h4>Episode 4</h4>
+              <div class="columns">
+                <div class="column">
+                  <p class="example-label">Baseline (ACT)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/success/posters/baseline-4.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/success/baseline-4.mp4" type="video/mp4" />
+                  </video>
+                </div>
+                <div class="column">
+                  <p class="example-label">BeamSearch (OSA)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/success/posters/osa-4.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/success/osa-4.mp4" type="video/mp4" />
+                  </video>
+                </div>
+              </div>
+            </article>
+
+            <article class="example-case">
+              <h4>Episode 5</h4>
+              <div class="columns">
+                <div class="column">
+                  <p class="example-label">Baseline (ACT)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/success/posters/baseline-5.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/success/baseline-5.mp4" type="video/mp4" />
+                  </video>
+                </div>
+                <div class="column">
+                  <p class="example-label">BeamSearch (OSA)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/success/posters/osa-5.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/success/osa-5.mp4" type="video/mp4" />
+                  </video>
+                </div>
+              </div>
+            </article>
+
+            <article class="example-case">
+              <h4>Episode 6</h4>
+              <div class="columns">
+                <div class="column">
+                  <p class="example-label">Baseline (ACT)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/success/posters/baseline-6.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/success/baseline-6.mp4" type="video/mp4" />
+                  </video>
+                </div>
+                <div class="column">
+                  <p class="example-label">BeamSearch (OSA)</p>
+                  <video poster="/papers/lookahead/static/videos/examples/success/posters/osa-6.jpg" controls muted loop playsinline preload="metadata">
+                    <source src="/papers/lookahead/static/videos/examples/success/osa-6.mp4" type="video/mp4" />
+                  </video>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column">
+            <div class="content">
+              <h2 class="title is-3">Embodied Search</h2>
+              <p>
+                At each planning point, ACT proposes a nominal chunk of 2D target
+                actions. Beam Search constructs nearby candidate chunks, rolls
+                them forward in the PushT simulator, and keeps the branches with
+                the strongest coverage reward.
+              </p>
+            </div>
+          </div>
+
+          <div class="column">
+            <h2 class="title is-3">One Step Ahead</h2>
+            <div class="columns is-centered">
+              <div class="column content">
+                <p>
+                  Full search is useful but expensive. One Step Ahead first tests
+                  the nominal ACT chunk. If that one-step simulation does not
+                  predict a harmful coverage drop, the policy action is used
+                  directly; otherwise Beam Search is triggered.
+                </p>
+                <p>
+                  This preserves the embodied success rate in the evaluated
+                  settings while reducing runtime by roughly 2.5x to 4x.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns is-centered">
+          <div class="column is-full-width">
+            <h2 class="title is-3">PushT Results</h2>
+            <div class="content has-text-justified">
+              <p>
+                Across 50 PushT episodes, Beam Search improves the ACT baseline
+                from 0% to 18% goal success. Average cumulative coverage reward
+                increases from 39.4 to 90.7, showing that search makes the policy
+                move the T object closer to the target even when binary success is
+                not reached.
+              </p>
+              <p>
+                Increasing branching factor and beam width makes search more
+                likely to select perturbed chunks over the nominal policy output.
+                The best tested configuration achieves the highest cumulative
+                reward, but with a large runtime cost; One Step Ahead targets this
+                redundancy by reserving full search for states where the nominal
+                action appears risky.
+              </p>
+            </div>
+
+            <div class="table-container">
+              <table class="table is-bordered is-striped is-hoverable is-fullwidth results-table">
+                <caption>
+                  PushT search performance across Beam Search tree configurations.
+                </caption>
+                <thead>
+                  <tr>
+                    <th>Method</th>
+                    <th>D</th>
+                    <th>C</th>
+                    <th>BW</th>
+                    <th>Avg. Sum Reward</th>
+                    <th>Avg. Max Reward</th>
+                    <th>Success (%)</th>
+                    <th>ASR (%)</th>
+                    <th>Runtime (s)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Beam Search</td>
+                    <td>2</td>
+                    <td>4</td>
+                    <td>2</td>
+                    <td>90.9</td>
+                    <td>0.77</td>
+                    <td>18</td>
+                    <td>56.4</td>
+                    <td>14</td>
+                  </tr>
+                  <tr>
+                    <td>Beam Search</td>
+                    <td>4</td>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>90.8</td>
+                    <td>0.78</td>
+                    <td>16</td>
+                    <td>37.5</td>
+                    <td>10</td>
+                  </tr>
+                  <tr>
+                    <td>Beam Search</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>2</td>
+                    <td>90.9</td>
+                    <td>0.77</td>
+                    <td>18</td>
+                    <td>58.23</td>
+                    <td>10</td>
+                  </tr>
+                  <tr>
+                    <td>Beam Search</td>
+                    <td>4</td>
+                    <td>8</td>
+                    <td>2</td>
+                    <td>94.7</td>
+                    <td>0.77</td>
+                    <td>18</td>
+                    <td>75.6</td>
+                    <td>33</td>
+                  </tr>
+                  <tr>
+                    <td>Beam Search</td>
+                    <td>4</td>
+                    <td>8</td>
+                    <td>4</td>
+                    <td>103.2</td>
+                    <td>0.81</td>
+                    <td>18</td>
+                    <td>75</td>
+                    <td>47</td>
+                  </tr>
+                  <tr>
+                    <td>Beam Search</td>
+                    <td>4</td>
+                    <td>8</td>
+                    <td>8</td>
+                    <td>92.2</td>
+                    <td>0.80</td>
+                    <td>10</td>
+                    <td>78.5</td>
+                    <td>87</td>
+                  </tr>
+                  <tr>
+                    <td>Beam Search</td>
+                    <td>8</td>
+                    <td>4</td>
+                    <td>2</td>
+                    <td>90.9</td>
+                    <td>0.77</td>
+                    <td>18</td>
+                    <td>58.23</td>
+                    <td>16</td>
+                  </tr>
+                  <tr>
+                    <td>ACT (Baseline)</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>39.44</td>
+                    <td>0.36</td>
+                    <td>0.0</td>
+                    <td>-</td>
+                    <td>2</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="result-figures">
+              <figure>
+                <img
+                  src="/papers/lookahead/static/images/figures/horizon-graph.png"
+                  alt="PushT search-frequency ablation across planning horizons."
+                />
+                <figcaption>
+                  Search-frequency ablation across planning horizons.
+                </figcaption>
+              </figure>
+              <figure>
+                <img
+                  src="/papers/lookahead/static/images/figures/barplot-osa.png"
+                  alt="One Step Ahead ablation against standard Beam Search."
+                />
+                <figcaption>
+                  One Step Ahead ablation against standard Beam Search.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="BibTeX">
+      <div class="container is-max-desktop content">
+        <h2 class="title">BibTeX</h2>
+        <pre><code>@misc{zeer2026lookahead,
+  title  = {Look Ahead: Search-Driven Reasoning in Language and Embodied AI},
+  author = {Zeer, Ahmed and Shbib, Osama and Yuce, Muzaffer Kaan and Kesgin, Himmet Toprak and Amasyali, Mehmet Fatih},
+  year   = {2026}
+}</code></pre>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="content has-text-centered">
+          <a
+            class="icon-link"
+            href="https://github.com/AhmedZeer/lerobot-tree/tree/main/examples/tree_search/pusht"
+          >
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
