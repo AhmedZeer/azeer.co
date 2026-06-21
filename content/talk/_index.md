@@ -6,6 +6,12 @@ paginate_by = 2
 
 Live streams, conference presentation and public events is what you will find here.
 
+### Designing an AI Hardware Accelerator
+In this talk, I discuss designing an AI hardware accelerator and the systems-level tradeoffs behind efficient AI computation.
+{{ youtube(id="v4UsOqf1N_c") }}
+
+-----
+
 ### MEDPRAI 2026 Conference
 I presented our research in enhancing the reasoning capabilities in LLMs with zero training.
 {{ youtube(id="ag77ETohaO0") }}
@@ -22,5 +28,4 @@ CosmosLLaVA was the first native multiomdal turkish model. We presented it here.
 GPU Programming was, and still, one of my favorite parallel processing paradigms to tinker with.
 In this video we have talked about Tensor Core programming and other CUDA Programming related topics.
 {{ youtube(id="t2nEVNK-lAk") }}
-
 

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+{%- set rel_attributes = macros_rel_attributes::rel_attributes() | trim -%}
+
+<h1>{{ section.title }}</h1>
+
+{{ section.content | safe }}
+
+<div id="article-list">
+	{%- for project in section.extra.projects %}
+		<article {% if not project.url %}class="draft"{% endif %}>
+			{%- if project.url %}
+				<a href="{{ project.url | safe }}" {% if rel_attributes %}rel="{{ rel_attributes }}"{% endif %}></a>
+			{%- else %}
+				<span class="badge">
+					<i class="icon"></i>
+					{{ project.status | default(value="Soon") }}
+				</span>
+			{%- endif %}
+			<h3>{{ project.name }}</h3>
+			{%- if project.description %}
+				{{ project.description | markdown | safe }}
+			{%- endif %}
+		</article>
+	{%- endfor %}
+</div>
+{% endblock content %}

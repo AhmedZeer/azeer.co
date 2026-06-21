@@ -1,10 +1,31 @@
 +++
-title = "One-click away journey."
-sort_by = "date"
-template = "article_list.html"
-page_template = "article.html"
-paginate_by = 2
+title = "Projects"
+template = "projects.html"
+
+[[extra.projects]]
+name = "Atik"
+description = "Tightly-Coupled Transformer Accelerator Hardware."
+url = "https://github.com/AhmedZeer/atik"
+
+[[extra.projects]]
+name = "UAV Lab"
+description = "Train Fixed-Wing UAVs in Isaac Lab."
+url = "https://github.com/AhmedZeer/uav-lab"
+
+[[extra.projects]]
+name = "Isaac UAV"
+description = "Simulate Fixed-Wing UAVs on Isaac Sim."
+url = "https://github.com/AhmedZeer/isaac-uav"
+
+[[extra.projects]]
+name = "Lookahead: Embodied Reasoning"
+description = "Tree Search reasoning for PushT."
+url = "https://azeer.co/research/lookahead/"
+
+[[extra.projects]]
+name = "RJE: Turkish Tree Search"
+description = "Search-Based Inference for Turkish LLM reasoning."
+url = "https://azeer.co/research/rje/"
 +++
 
-I tend to keep my adventure writing simple and concise.   
-Still, take a **deep breath** before delving in.
+Selected projects, research pages, and public repositories.

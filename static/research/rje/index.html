@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="title" content="Enhancing Mathematical Reasoning in Turkish Large Language Models with Search-Based Inference and Model Merging">
+  <meta name="description" content="Improving Turkish LLM math reasoning using LoRA fine-tuning, linear model merging, and search-based inference (MCTS/ToT), achieving up to 70%+ accuracy.">
+  <meta name="keywords" content="LLM Reasoning, Turkish NLP, Finetuning, Tree of thoughts, Model Merging, Tree Search, MCTS, COSMOS-DPO">
+  <meta name="author" content="Ahmed Zeer, Osama Shbib, Muzaffer Kaan Yucel, Himmet Toprak Kesgin, Mehmet Fatih Amasyali">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="English">
+  
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Yildiz Technical University - Computer Engineering">
+  <meta property="og:title" content="Enhancing Mathematical Reasoning in Turkish Large Language Models with Search-Based Inference and Model Merging">
+  <meta property="og:description" content="We improve Turkish mathematical reasoning in Large Language Models by combining LoRA fine-tuning, weight-space model merging, and search-based inference.">
+  <meta property="og:url" content="https://azeer.co/research/rje/">
+  <meta property="og:image" content="/research/rje/static/images/performance-entry.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2025-01-01T00:00:00.000Z">
+  <meta property="article:author" content="Ahmed Zeer">
+
+  <link rel="icon" type="image/png" href="/research/rje/static/images/favicon.ico">
+  <title>Enhancing Mathematical Reasoning in Turkish LLMs - Ahmed Zeer | MEDPRAI</title>
+  
+  <link rel="stylesheet" href="/research/rje/static/css/bulma.min.css">
+  <link rel="stylesheet" href="/research/rje/static/css/index.css">
+  <link rel="stylesheet" href="/research/rje/static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    .teaser-image {
+      max-width: 80%;
+      height: auto;
+      margin: 0 auto;
+      display: block;
+    }
+    .content-image {
+      max-width: 60%; /* Reduces size of Methodology/Results images */
+      height: auto;
+      margin: 0 auto;
+      display: block;
+    }
+    figcaption {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
+
+  <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="/research/rje/static/js/fontawesome.all.min.js"></script>
+  <script defer src="/research/rje/static/js/index.js"></script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "headline": "Enhancing Mathematical Reasoning in Turkish Large Language Models with Search-Based Inference and Model Merging",
+    "description": "We improve Turkish mathematical reasoning in Large Language Models by combining LoRA fine-tuning, weight-space model merging, and search-based inference.",
+    "author": [
+      {
+        "@type": "Person",
+        "name": "Ahmed Zeer",
+        "url": "https://www.linkedin.com/in/ahmedzeer/"
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <div class="more-works-container">
+    <button class="more-works-btn" onclick="toggleMoreWorks()" title="View More Works from Our Lab">
+      <i class="fas fa-flask"></i>
+      More Works
+      <i class="fas fa-chevron-down dropdown-arrow"></i>
+    </button>
+    <div class="more-works-dropdown" id="moreWorksDropdown">
+      <div class="dropdown-header">
+        <h4>More Works from Our Lab</h4>
+        <button class="close-btn" onclick="toggleMoreWorks()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="works-list">
+        <a href="https://arxiv.org/abs/2404.17336" class="work-item" target="_blank">
+            <div class="work-info">
+              <h5>CosmosGPT</h5>
+              <p>Monolingual Training for Turkish Language Models</p>
+              <span class="work-venue">ArXiv 2024</span>
+            </div>
+            <i class="fas fa-external-link-alt"></i>
+        </a>
+        
+        <a href="https://ieeexplore.ieee.org/document/10710874" class="work-item" target="_blank">
+          <div class="work-info">
+            <h5>Cosmos Llava</h5>
+            <p>First Turkish VLM.</p>
+            <span class="work-venue">IDAP 2024</span>
+          </div>
+          <i class="fas fa-external-link-alt"></i>
+        </a>
+
+        <a href="https://huggingface.co/spaces/malhajar/OpenLLMTurkishLeaderboard" class="work-item" target="_blank">
+            <div class="work-info">
+              <h5>COSMOS-DPO</h5>
+              <p>Optimizing LLMs for Turkish.</p>
+              <span class="work-venue">ASYU 2024</span>
+            </div>
+            <i class="fas fa-external-link-alt"></i>
+          </a>
+      </div>
+    </div>
+  </div>
+
+  <main id="main-content">
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">Enhancing Reasoning in Turkish LLMs with Search-Based Inference</h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://www.linkedin.com/in/ahmedzeer/" target="_blank">Ahmed Zeer</a><sup>1</sup>,</span>
+                <span class="author-block">
+                  <a href="https://www.linkedin.com/in/osama-shbib/" target="_blank">Osama Shbib</a><sup>1</sup>,</span>
+                  <span class="author-block">
+                    <a href="https://www.linkedin.com/in/muzaffer-kaan-y%C3%BCce-3b69191a6/" target="_blank">Muzaffer Kaan Yuce</a><sup>1</sup>,
+                  </span>
+                  <span class="author-block">
+                    <a href="https://www.linkedin.com/in/toprak-kesgin-7b6386181/" target="_blank">Himmet Toprak Kesgin</a><sup>1</sup>,
+                  </span>
+                  <span class="author-block">
+                    <a href="https://www.linkedin.com/in/mehmet-fatih-amasyali/" target="_blank">Mehmet Fatih Amasyali</a><sup>1</sup>
+                  </span>
+                  </div>
+
+                  <div class="is-size-5 publication-authors">
+                    <span class="author-block"><sup>1</sup>Yildiz Technical University, Istanbul, Türkiye<br>MEDPRAI 2026</span>
+                  </div>
+
+                  <div class="column has-text-centered">
+                    <div class="publication-links">
+                  <span class="link-block">
+                    <a href="https://www.youtube.com/watch?v=ag77ETohaO0" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                    </span>
+                    <span>Video</span>
+                    </a>
+                  </span>
+
+                    <span class="link-block">
+                    <a href="https://github.com/Cosmos-YTU/rje-turkish-reasoning" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+
+                <span class="link-block">
+                  <a href="https://huggingface.co/rje-turkish-reasoning" target="_blank"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="fas fa-database"></i>
+                  </span>
+                  <span>Dataset & Models</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+            
+            <figure style="margin-bottom: 2rem;">
+                <img src="/research/rje/static/images/performance-entry.png" alt="Performance Entry Results" style="width: 200%; height: auto;">
+            </figure>
+
+            <div class="content has-text-centered" style="margin-bottom: 2rem;">
+                <p>
+                  <strong>System 2 Thinking for Turkish:</strong> We bring advanced "thinking" strategies to Turkish AI models. Instead of guessing the answer immediately, our system explores multiple reasoning paths—like a tree of possibilities—backtracking when it gets stuck and self-correcting mistakes along the way.
+                </p>
+            </div>
+
+            <figure style="margin-bottom: 1rem;">
+                <img src="/research/rje/static/images/tot-harezmi.png" alt="Tree of Thought Generation" class="teaser-image">
+            </figure>
+
+        </div>
+      </div>
+    </div>
+</section>
+
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Solving complex math problems in Turkish is challenging for AI models due to limited data. In this work, we improve performance without massive re-training. We combine three key techniques: fine-tuning on high-quality Turkish math data, merging different model "experts" together, and using smart search algorithms (like Tree of Thoughts) that let the model "think" before answering. Our approach boosts accuracy significantly, reaching over 70% on benchmark tests, proving that smarter inference strategies can compensate for data scarcity.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Methodology</h2>
+        
+        <figure style="margin-bottom: 1.5rem;">
+          <img src="/research/rje/static/images/harezmi-pipeline-drawio-2.jpg" alt="Reward-Judge-Enhancement Pipeline" class="content-image">
+          <figcaption><strong>Figure 1:</strong> The Reward-Judge-Enhancement Loop.</figcaption>
+        </figure>
+
+        <div class="content has-text-justified">
+          <p>
+            Our method improves how the model answers by creating a feedback loop. Instead of just outputting one answer, the model generates a draft, acts as a "judge" to critique its own work, and then produces an "enhanced" version based on that critique. This mimics how a human might double-check their work before submitting an answer.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="container is-max-desktop">
+
+<section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Results</h2>
+          
+          <figure style="margin-bottom: 1.5rem;">
+            <img src="/research/rje/static/images/harezmi-inference-results-4.png" alt="Performance Comparison" class="content-image">
+            <figcaption><strong>Figure 3:</strong> Performance improvements across different methods.</figcaption>
+          </figure>
+  
+          <div class="content has-text-justified">
+            <p>
+              The results show a clear improvement. The standard model (Cosmos-DPO) performs decently on its own, but when we add our search algorithms (like MCTS or DFS), the score jumps significantly. Merging multiple fine-tuned models also provided a solid boost, showing that combining these techniques is the most effective way to solve hard math problems in Turkish.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <div class="bibtex-header">
+        <h2 class="title">BibTeX</h2>
+        <button class="copy-bibtex-btn" onclick="copyBibTeX()" title="Copy BibTeX to clipboard">
+          <i class="fas fa-copy"></i>
+          <span class="copy-text">Copy</span>
+        </button>
+      </div>
+      <pre id="bibtex-code"><code>@article{Zeer2025Enhancing,
+  title={Enhancing Mathematical Reasoning in Turkish Large Language Models with Search-Based Inference and Model Merging},
+  author={Zeer, Ahmed and Shbib, Osama and Yuce, Muzaffer Kaan and Kesgin, Himmet Toprak and Amasyali, Mehmet Fatih},
+  journal={MEDPRAI},
+  year={2025},
+  institution={Yildiz Technical University}
+}</code></pre>
+    </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content has-text-centered">
+          <p>
+            This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
